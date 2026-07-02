@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>查詢我的紀錄｜愛地球計畫</title>
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <h1>🌍 愛地球計畫 自學平台</h1>
+    <nav class="nav">
+      <a href="index.html">首頁</a>
+      <a href="quiz.html">開始測驗</a>
+      <a href="records.html" class="active">查詢我的紀錄</a>
+      <a href="worksheet.html">學習單</a>
+      <a href="teacher.html">老師專區</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+
+  <section class="card">
+    <h2>🔍 查詢我的測驗紀錄</h2>
+    <p>輸入你的班級、姓名、座號，就可以看到自己每一次的測驗成績。</p>
+    <div class="grid cols-3">
+      <div>
+        <label for="q-class">班級</label>
+        <input type="text" id="q-class" placeholder="例如：二年一班" />
+      </div>
+      <div>
+        <label for="q-name">姓名</label>
+        <input type="text" id="q-name" placeholder="例如：王小美" />
+      </div>
+      <div>
+        <label for="q-seat">座號</label>
+        <input type="number" id="q-seat" placeholder="例如：5" />
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn" onclick="doQuery()">查詢紀錄</button>
+    </div>
+  </section>
+
+  <section class="card" id="result-card" style="display:none;">
+    <h2>📋 查詢結果</h2>
+    <p id="result-summary"></p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>時間</th>
+            <th>測驗類別</th>
+            <th>得分</th>
+            <th>答對題數</th>
+          </tr>
+        </thead>
+        <tbody id="result-tbody"></tbody>
+      </table>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">愛地球計畫 自學平台｜設計給國小二年級學生使用</footer>
+
+<script src="js/config.js"></script>
+<script src="js/storage.js"></script>
+<script>
+  window.addEventListener("DOMContentLoaded", () => {
+    try {
+      const raw = localStorage.getItem("earthStudentInfo");
+      if (raw) {
+        const info = JSON.parse(raw);
+        document.getElementById("q-class").value = info.className || "";
+        document.getElementById("q-name").value = info.name || "";
+        document.getElementById("q-seat").value = info.seatNo || "";
+      }
+    } catch (e) {}
+  });
+
+  async function doQuery() {
+    const className = document.getElementById("q-class").value.trim();
+    const name = document.getElementById("q-name").value.trim();
+    const seatNo = document.getElementById("q-seat").value.trim();
+
+    if (!className || !name || !seatNo) {
+      alert("請輸入班級、姓名、座號再查詢喔！");
+      return;
+    }
+
+    const records = await queryStudentRecords({ className, name, seatNo });
+    const resultCard = document.getElementById("result-card");
+    const tbody = document.getElementById("result-tbody");
+    const summary = document.getElementById("result-summary");
+
+    resultCard.style.display = "block";
+
+    if (!records.length) {
+      summary.textContent = "目前還沒有找到任何紀錄，快去挑戰測驗看看吧！";
+      tbody.innerHTML = "";
+      return;
+    }
+
+    const sorted = records.slice().sort((a, b) => (Number(a.timestamp) < Number(b.timestamp) ? 1 : -1));
+    summary.textContent = `${name} 同學，共有 ${records.length} 筆紀錄：`;
+    tbody.innerHTML = sorted
+      .map(
+        (r) => `
+        <tr>
+          <td>${formatTimestamp(r.timestamp)}</td>
+          <td>${r.testTypeLabel}</td>
+          <td>${r.score}</td>
+          <td>${r.correct} / ${r.total}</td>
+        </tr>`
+      )
+      .join("");
+
+    resultCard.scrollIntoView({ behavior: "smooth" });
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>老師專區｜愛地球計畫</title>
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <h1>🌍 愛地球計畫 自學平台</h1>
+    <nav class="nav">
+      <a href="index.html">首頁</a>
+      <a href="quiz.html">開始測驗</a>
+      <a href="records.html">查詢我的紀錄</a>
+      <a href="worksheet.html">學習單</a>
+      <a href="teacher.html" class="active">老師專區</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+
+  <section class="card">
+    <h2>🔐 老師登入</h2>
+    <p>請輸入密碼以查看全班的作答紀錄。</p>
+    <div class="grid cols-2">
+      <div>
+        <label for="teacher-password">密碼</label>
+        <input type="password" id="teacher-password" placeholder="請輸入密碼" />
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn" onclick="teacherLogin()">登入查看</button>
+    </div>
+    <p class="score-note" id="login-hint"></p>
+  </section>
+
+  <section class="card" id="dashboard-card" style="display:none;">
+    <h2>📊 全班作答紀錄</h2>
+    <div class="grid cols-3">
+      <div>
+        <label for="filter-class">篩選班級</label>
+        <input type="text" id="filter-class" placeholder="留空＝全部" oninput="renderTable()" />
+      </div>
+      <div>
+        <label for="filter-type">篩選測驗類別</label>
+        <select id="filter-type" onchange="renderTable()">
+          <option value="">全部</option>
+          <option value="reading">閱讀測驗</option>
+          <option value="listening">聽力測驗</option>
+          <option value="short">簡答測驗</option>
+        </select>
+      </div>
+      <div>
+        <label for="filter-name">篩選姓名</label>
+        <input type="text" id="filter-name" placeholder="留空＝全部" oninput="renderTable()" />
+      </div>
+    </div>
+
+    <p class="score-note" id="dashboard-summary"></p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>時間</th>
+            <th>班級</th>
+            <th>姓名</th>
+            <th>座號</th>
+            <th>測驗類別</th>
+            <th>得分</th>
+            <th>答對題數</th>
+          </tr>
+        </thead>
+        <tbody id="dashboard-tbody"></tbody>
+      </table>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn secondary" onclick="exportCurrentView()">📥 匯出目前畫面為 Excel(CSV)</button>
+      <button class="btn outline" onclick="location.reload()">🔄 重新整理</button>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>⚙️ 後端設定說明（給老師）</h2>
+    <details>
+      <summary>點我展開：如何讓全班紀錄自動存進 Google 試算表</summary>
+      <div style="margin-top:0.8rem;">
+        <p>目前資料只會存在「這一台裝置」的瀏覽器中。若要讓全班不同裝置的作答都自動集中、並可直接在 Google 試算表 / 匯出 Excel，請依下列步驟設定一次即可：</p>
+        <ol>
+          <li>開一份新的 Google 試算表，命名為「愛地球計畫紀錄」。</li>
+          <li>選單「擴充功能」→「Apps Script」，把專案資料夾內 <code>apps-script/Code.gs</code> 的內容整個貼上（取代原本內容）。</li>
+          <li>把 <code>Code.gs</code> 裡的 <code>TEACHER_SECRET</code> 改成你自己的私密密碼（這組密碼只存在 Apps Script 裡，<strong>不要</strong>寫進網站原始碼或 <code>js/config.js</code>，因為網站原始碼是公開的）。</li>
+          <li>點選「部署」→「新增部署作業」→類型選「網頁應用程式」，執行身分選「我」，存取權選「任何人」，完成部署。</li>
+          <li>複製部署後得到的網址（結尾是 <code>/exec</code>），貼到 <code>js/config.js</code> 的 <code>APPS_SCRIPT_URL</code> 欄位（這個網址本身不是密碼，可以公開）。</li>
+          <li>存檔後重新整理網頁即可。之後所有學生的作答都會自動寫入這份 Google 試算表，老師也可以直接在 Google 試算表用「檔案 → 下載 → Microsoft Excel」匯出。登入老師專區時，請輸入你在 Apps Script 設定的那組密碼。</li>
+        </ol>
+      </div>
+    </details>
+  </section>
+
+</main>
+
+<footer class="site-footer">愛地球計畫 自學平台｜設計給國小二年級學生使用</footer>
+
+<script src="js/config.js"></script>
+<script src="js/storage.js"></script>
+<script>
+  let allRecords = [];
+
+  async function teacherLogin() {
+    const password = document.getElementById("teacher-password").value;
+    const hint = document.getElementById("login-hint");
+    hint.textContent = "查詢中...";
+
+    const result = await queryAllRecords(password);
+    if (!result.ok) {
+      hint.textContent = "❌ " + (result.message || "密碼錯誤");
+      hint.style.color = "var(--red)";
+      return;
+    }
+
+    hint.textContent = "";
+    allRecords = result.records || [];
+    document.getElementById("dashboard-card").style.display = "block";
+    document.getElementById("dashboard-summary").textContent =
+      result.source === "cloud"
+        ? "資料來源：Google 試算表（全班、所有裝置皆同步）"
+        : "資料來源：本機瀏覽器（僅顯示這台裝置上的作答紀錄，尚未設定雲端同步）";
+    renderTable();
+    document.getElementById("dashboard-card").scrollIntoView({ behavior: "smooth" });
+  }
+
+  function getFilteredRecords() {
+    const className = document.getElementById("filter-class").value.trim();
+    const type = document.getElementById("filter-type").value;
+    const name = document.getElementById("filter-name").value.trim();
+
+    return allRecords.filter((r) => {
+      return (
+        (!className || String(r.className).includes(className)) &&
+        (!type || r.testType === type) &&
+        (!name || String(r.name).includes(name))
+      );
+    });
+  }
+
+  function renderTable() {
+    const filtered = getFilteredRecords().slice().sort((a, b) => (Number(a.timestamp) < Number(b.timestamp) ? 1 : -1));
+    const tbody = document.getElementById("dashboard-tbody");
+    tbody.innerHTML = filtered
+      .map(
+        (r) => `
+        <tr>
+          <td>${formatTimestamp(r.timestamp)}</td>
+          <td>${r.className}</td>
+          <td>${r.name}</td>
+          <td>${r.seatNo}</td>
+          <td>${r.testTypeLabel}</td>
+          <td>${r.score}</td>
+          <td>${r.correct} / ${r.total}</td>
+        </tr>`
+      )
+      .join("");
+  }
+
+  function exportCurrentView() {
+    const filtered = getFilteredRecords();
+    if (!filtered.length) {
+      alert("目前沒有資料可以匯出。");
+      return;
+    }
+    exportRecordsToCSV(filtered);
+  }
+</script>
+</body>
+</html>
