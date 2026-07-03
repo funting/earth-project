@@ -3,7 +3,18 @@
 const TEST_LABELS = {
   reading: "閱讀測驗",
   listening: "聽力測驗",
-  short: "簡答測驗"
+  short: "簡答測驗",
+  engVocab: "英文詞彙測驗",
+  engListening: "英文聽力測驗"
+};
+
+// 每種測驗每次出現的題數（從題庫中抽取，其餘出現機率相同）
+const QUESTION_COUNTS = {
+  reading: 5,
+  listening: 5,
+  short: 5,
+  engVocab: 10,
+  engListening: 10
 };
 
 let currentTestType = null;
@@ -87,7 +98,7 @@ function startTest(type) {
   saveStudentInfoLocal(info);
 
   currentTestType = type;
-  currentQuestions = pickRandomQuestions(type, 5);
+  currentQuestions = pickRandomQuestions(type, QUESTION_COUNTS[type]);
 
   document.getElementById("section-menu").style.display = "none";
   document.getElementById("section-result").style.display = "none";
@@ -114,19 +125,27 @@ function renderQuestions(type, questions) {
       inner += `<p><strong>${q.question}</strong></p>`;
       inner += renderOptions(q, idx);
     } else if (type === "listening") {
-      inner += `<button type="button" class="speak-btn" onclick="speakPassage('${q.id}')">🔊 播放語音</button>`;
+      inner += `<button type="button" class="speak-btn" onclick="speakPassage('${q.id}', 'zh-TW')">🔊 播放語音</button>`;
       inner += `<details><summary>看文字稿（協助用）</summary><div class="passage-box" id="passage-${q.id}">${q.passage}</div></details>`;
       inner += `<p><strong>${q.question}</strong></p>`;
       inner += renderOptions(q, idx);
     } else if (type === "short") {
       inner += `<p><strong>${q.prompt}</strong></p>`;
       inner += `<input type="text" id="answer-${idx}" placeholder="請輸入答案" autocomplete="off" />`;
+    } else if (type === "engVocab") {
+      inner += `<p><strong>${q.question}</strong></p>`;
+      inner += renderOptions(q, idx);
+    } else if (type === "engListening") {
+      inner += `<button type="button" class="speak-btn" onclick="speakPassage('${q.id}', 'en-US')">🔊 Play (English)</button>`;
+      inner += `<details><summary>看英文文字稿（協助用）</summary><div class="passage-box" id="passage-${q.id}">${q.passage}</div></details>`;
+      inner += `<p><strong>${q.question}</strong></p>`;
+      inner += renderOptions(q, idx);
     }
 
     block.innerHTML = inner;
     container.appendChild(block);
 
-    if (type === "listening") {
+    if (type === "listening" || type === "engListening") {
       block.dataset.passage = q.passage;
     }
   });
@@ -145,7 +164,7 @@ function renderOptions(q, idx) {
   return html;
 }
 
-function speakPassage(questionId) {
+function speakPassage(questionId, lang) {
   const q = currentQuestions.find((item) => item.id === questionId);
   if (!q) return;
 
@@ -156,8 +175,8 @@ function speakPassage(questionId) {
 
   window.speechSynthesis.cancel();
   const utter = new SpeechSynthesisUtterance(q.passage);
-  utter.lang = "zh-TW";
-  utter.rate = 0.9;
+  utter.lang = lang || "zh-TW";
+  utter.rate = 0.85;
   window.speechSynthesis.speak(utter);
 }
 
@@ -207,7 +226,7 @@ function submitTest() {
     }
   });
 
-  const score = correct * 20;
+  const score = Math.round(correct * (100 / currentQuestions.length));
   document.getElementById("progress-fill").style.width = "100%";
 
   showResult(score, correct, detailRows);

@@ -202,6 +202,95 @@ const QUESTION_BANK = {
       prompt: "每年四月二十二日是世界＿＿＿日，大家會一起做環保活動。（請填一個詞語）",
       acceptable: ["地球", "地球日"]
     }
+  ],
+
+  // 英文進階專區：英文詞彙（10 題，測驗時全部出現，每題 10 分）
+  engVocab: [
+    { id: "ev1", question: "「地球」的英文是？", options: ["Earth", "Sun", "Moon", "Star"], answerIndex: 0 },
+    { id: "ev2", question: "「回收」的英文是？", options: ["recycle", "garbage", "clean", "plant"], answerIndex: 0 },
+    { id: "ev3", question: "「減少」的英文是？", options: ["reduce", "reuse", "produce", "increase"], answerIndex: 0 },
+    { id: "ev4", question: "「重複使用」的英文是？", options: ["reuse", "refuse", "remove", "recycle"], answerIndex: 0 },
+    { id: "ev5", question: "「污染」的英文是？", options: ["pollution", "protection", "population", "production"], answerIndex: 0 },
+    { id: "ev6", question: "「能源」的英文是？", options: ["energy", "engine", "exercise", "entrance"], answerIndex: 0 },
+    { id: "ev7", question: "「保護」的英文是？", options: ["protect", "project", "produce", "provide"], answerIndex: 0 },
+    { id: "ev8", question: "「植物」的英文是？", options: ["plant", "plane", "plate", "place"], answerIndex: 0 },
+    { id: "ev9", question: "「乾淨的」的英文是？", options: ["clean", "clear", "close", "clock"], answerIndex: 0 },
+    { id: "ev10", question: "「垃圾」的英文是？", options: ["trash", "treasure", "trail", "track"], answerIndex: 0 }
+  ],
+
+  // 英文進階專區：英文聽力（10 題，測驗時全部出現，每題 10 分）
+  // passage 會用英文語音朗讀，question / options 用中文幫助理解聽到的內容
+  engListening: [
+    {
+      id: "el1",
+      passage: "We should turn off the lights to save energy.",
+      question: "這句話的意思是？",
+      options: ["我們應該關燈以節省能源", "我們應該打開所有的燈", "我們應該買新的燈泡", "我們應該在晚上出門"],
+      answerIndex: 0
+    },
+    {
+      id: "el2",
+      passage: "Please put the plastic bottle in the recycling bin.",
+      question: "說話的人要我們做什麼？",
+      options: ["把塑膠瓶丟進資源回收桶", "把塑膠瓶丟進一般垃圾桶", "把塑膠瓶帶回家", "把塑膠瓶壓扁丟掉"],
+      answerIndex: 0
+    },
+    {
+      id: "el3",
+      passage: "Trees give us clean air to breathe.",
+      question: "這句話說樹木可以帶給我們什麼？",
+      options: ["乾淨的空氣", "乾淨的水", "美味的水果", "涼爽的陰影"],
+      answerIndex: 0
+    },
+    {
+      id: "el4",
+      passage: "Don't waste water when you brush your teeth.",
+      question: "這句話在提醒我們什麼？",
+      options: ["刷牙時不要浪費水", "刷牙時要唱歌", "刷牙要刷很久", "刷牙後要洗臉"],
+      answerIndex: 0
+    },
+    {
+      id: "el5",
+      passage: "Riding a bike does not pollute the air.",
+      question: "為什麼騎腳踏車比較環保？",
+      options: ["不會汙染空氣", "騎得比較快", "比較便宜", "比較安全"],
+      answerIndex: 0
+    },
+    {
+      id: "el6",
+      passage: "We can reuse old clothes instead of throwing them away.",
+      question: "這句話建議我們怎麼處理舊衣服？",
+      options: ["重複使用舊衣服，不要丟掉", "把舊衣服燒掉", "把舊衣服藏起來", "把舊衣服剪破"],
+      answerIndex: 0
+    },
+    {
+      id: "el7",
+      passage: "The Earth is our only home, so let's protect it.",
+      question: "這句話希望我們做什麼？",
+      options: ["保護地球", "離開地球", "忽略地球", "佈置地球"],
+      answerIndex: 0
+    },
+    {
+      id: "el8",
+      passage: "Sunlight can be turned into clean energy.",
+      question: "這句話說陽光可以變成什麼？",
+      options: ["乾淨的能源", "乾淨的水", "乾淨的空氣", "乾淨的食物"],
+      answerIndex: 0
+    },
+    {
+      id: "el9",
+      passage: "Please throw your trash in the garbage can, not on the ground.",
+      question: "這句話要我們把垃圾丟在哪裡？",
+      options: ["垃圾桶裡，不要丟在地上", "河裡", "海裡", "學校走廊"],
+      answerIndex: 0
+    },
+    {
+      id: "el10",
+      passage: "Planting more trees helps to clean the air.",
+      question: "這句話說多種樹可以幫助什麼？",
+      options: ["讓空氣變乾淨", "讓天空變藍", "讓花朵變多", "讓水變乾淨"],
+      answerIndex: 0
+    }
   ]
 };
 
