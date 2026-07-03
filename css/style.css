@@ -221,10 +221,87 @@ select {
   font-family: inherit;
 }
 
+textarea {
+  width: 100%;
+  padding: 0.65rem 0.8rem;
+  font-size: 1rem;
+  border: 2px solid #cfe4d7;
+  border-radius: 10px;
+  background: #fff;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 110px;
+  line-height: 1.7;
+}
+
 input:focus,
-select:focus {
+select:focus,
+textarea:focus {
   outline: none;
   border-color: var(--green);
+}
+
+/* Guided writing */
+.chip-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.6rem 0 1rem;
+}
+
+.chip {
+  background: var(--green-light);
+  color: var(--green-dark);
+  border: 2px solid #cfe4d7;
+  border-radius: 999px;
+  padding: 0.4rem 0.9rem;
+  cursor: pointer;
+  font-size: 0.92rem;
+  font-family: inherit;
+}
+
+.chip:hover {
+  border-color: var(--green);
+  background: #dff3e6;
+}
+
+.chip.starter {
+  background: #eef5ff;
+  border-color: #cfe0f7;
+  color: var(--blue);
+  text-align: left;
+}
+
+.step-dots {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  margin: 1rem 0;
+}
+
+.step-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #dbe9df;
+  flex-shrink: 0;
+}
+
+.step-dot.active {
+  background: var(--green);
+}
+
+.step-dot.done {
+  background: var(--yellow);
+}
+
+.draft-box {
+  background: var(--green-light);
+  border-left: 4px solid var(--green);
+  border-radius: 8px;
+  padding: 1rem 1.2rem;
+  line-height: 2;
+  white-space: pre-wrap;
 }
 
 /* Quiz */

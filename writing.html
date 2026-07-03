@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>引導式寫作｜愛地球計畫</title>
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+<header class="site-header no-print">
+  <div class="container">
+    <h1>🌍 愛地球計畫 自學平台</h1>
+    <nav class="nav">
+      <a href="index.html">首頁</a>
+      <a href="quiz.html">開始測驗</a>
+      <a href="writing.html" class="active">引導式寫作</a>
+      <a href="records.html">查詢我的紀錄</a>
+      <a href="worksheet.html">學習單</a>
+      <a href="teacher.html">老師專區</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+
+  <section class="card no-print">
+    <h2>✏️ 引導式寫作：我的愛地球小短文</h2>
+    <p>跟著步驟一段一段完成，遇到不知道怎麼寫的時候，可以點選下面的「詞語小卡」或「句子提示」幫忙喔！</p>
+
+    <div class="grid cols-3">
+      <div>
+        <label for="w-class">班級</label>
+        <input type="text" id="w-class" placeholder="例如：二年一班" />
+      </div>
+      <div>
+        <label for="w-name">姓名</label>
+        <input type="text" id="w-name" placeholder="例如：王小美" />
+      </div>
+      <div>
+        <label for="w-seat">座號</label>
+        <input type="number" id="w-seat" placeholder="例如：5" />
+      </div>
+    </div>
+
+    <label for="essay-title">短文題目</label>
+    <input type="text" id="essay-title" placeholder="例如：我的愛地球小短文" />
+  </section>
+
+  <section class="card" id="writing-card">
+    <div id="step-editor">
+      <div class="step-dots" id="step-dots"></div>
+      <h2 id="step-heading"></h2>
+      <p id="step-guide" class="score-note" style="text-align:left;"></p>
+
+      <p><strong>💡 句子提示：</strong>點一下就可以直接用這句話當開頭</p>
+      <div class="chip-group" id="starter-chips"></div>
+
+      <p><strong>📚 詞語小卡：</strong>點一下就會加進你的句子裡</p>
+      <div class="chip-group" id="word-chips"></div>
+
+      <label for="step-textarea">寫下你的句子</label>
+      <textarea id="step-textarea" rows="5"></textarea>
+
+      <div class="btn-row no-print">
+        <button class="btn outline" id="prev-step-btn" onclick="goPrevStep()">← 上一段</button>
+        <button class="btn" id="next-step-btn" onclick="goNextStep()">下一段 →</button>
+      </div>
+    </div>
+
+    <div id="step-preview" style="display:none;">
+      <h2>🎉 完成了！這是你的愛地球小短文</h2>
+      <p class="score-note" id="preview-meta"></p>
+      <h3 id="preview-title" style="text-align:center;"></h3>
+      <div class="draft-box" id="draft-content"></div>
+
+      <div class="btn-row no-print">
+        <button class="btn outline" onclick="backToEditing()">← 回去修改</button>
+        <button class="btn secondary" onclick="window.print()">🖨️ 列印 / 存成 PDF</button>
+        <a class="btn" href="quiz.html">🎯 前往測驗</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer no-print">愛地球計畫 自學平台｜設計給國小二年級學生使用</footer>
+
+<script src="js/writing.js"></script>
+</body>
+</html>
